@@ -24,6 +24,8 @@ class ZegoInviteeCallingBottomToolBar extends StatefulWidget {
   final ZegoCallButtonUIConfig declineButtonConfig;
   final ZegoCallButtonUIConfig acceptButtonConfig;
 
+  final ZegoNetworkLoadingConfig? networkLoadingConfig;
+
   const ZegoInviteeCallingBottomToolBar({
     Key? key,
     required this.pageManager,
@@ -32,6 +34,7 @@ class ZegoInviteeCallingBottomToolBar extends StatefulWidget {
     required this.invitationType,
     required this.declineButtonConfig,
     required this.acceptButtonConfig,
+    this.networkLoadingConfig,
   }) : super(key: key);
 
   @override
@@ -65,13 +68,27 @@ class ZegoInviteeCallingBottomToolBarState
           children: [
             ...widget.declineButtonConfig.visible
                 ? [
-                    declineButton(),
+                    ZegoNetworkLoading(
+                      config: widget.networkLoadingConfig ??
+                          ZegoNetworkLoadingConfig(
+                            enabled: true,
+                            progressColor: Colors.white,
+                          ),
+                      child: declineButton(),
+                    ),
                     SizedBox(width: 230.zR),
                   ]
                 : [],
             ...widget.acceptButtonConfig.visible
                 ? [
-                    acceptButton(),
+                    ZegoNetworkLoading(
+                      config: widget.networkLoadingConfig ??
+                          ZegoNetworkLoadingConfig(
+                            enabled: true,
+                            progressColor: Colors.white,
+                          ),
+                      child: acceptButton(),
+                    ),
                   ]
                 : [],
           ],
@@ -81,10 +98,11 @@ class ZegoInviteeCallingBottomToolBarState
   }
 
   Widget declineButton() {
+    final invitationID = widget.pageManager.invitationData.invitationID;
     return ZegoRefuseInvitationButton(
       isAdvancedMode: true,
       inviterID: widget.inviter.id,
-      targetInvitationID: widget.pageManager.invitationData.invitationID,
+      targetInvitationID: invitationID,
       // data customization is not supported
       data: const JsonEncoder().convert({
         ZegoCallInvitationProtocolKey.reason:
@@ -104,17 +122,22 @@ class ZegoInviteeCallingBottomToolBarState
       buttonSize:
           widget.declineButtonConfig.size ?? Size(120.zR, 120.zR + 50.zR),
       iconSize: widget.declineButtonConfig.iconSize ?? Size(108.zR, 108.zR),
-      onPressed: (String code, String message) {
-        widget.pageManager.onLocalRefuseInvitation(code, message);
+      onPressed: (ZegoRefuseInvitationButtonResult result) {
+        widget.pageManager.onLocalRefuseInvitation(
+          invitationID,
+          result.code,
+          result.message,
+        );
       },
     );
   }
 
   Widget acceptButton() {
+    final invitationID = widget.pageManager.invitationData.invitationID;
     return ZegoAcceptInvitationButton(
       isAdvancedMode: true,
       inviterID: widget.inviter.id,
-      targetInvitationID: widget.pageManager.invitationData.invitationID,
+      targetInvitationID: invitationID,
       customData: ZegoCallInvitationAcceptRequestProtocol().toJson(),
       icon: ButtonIcon(
         icon: widget.acceptButtonConfig.icon ??
@@ -130,8 +153,12 @@ class ZegoInviteeCallingBottomToolBarState
       buttonSize:
           widget.acceptButtonConfig.size ?? Size(120.zR, 120.zR + 50.zR),
       iconSize: widget.acceptButtonConfig.iconSize ?? Size(108.zR, 108.zR),
-      onPressed: (String code, String message) {
-        widget.pageManager.onLocalAcceptInvitation(code, message);
+      onPressed: (ZegoAcceptInvitationButtonResult result) {
+        widget.pageManager.onLocalAcceptInvitation(
+          invitationID,
+          result.code,
+          result.message,
+        );
       },
     );
   }

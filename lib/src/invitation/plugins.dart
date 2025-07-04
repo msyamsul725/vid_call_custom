@@ -79,11 +79,11 @@ class ZegoCallPrebuiltPlugins {
         ZegoUIKit().getSignalingPlugin().getConnectionState();
 
     subscriptions
-      ..add(ZegoUIKit()
+      .add(ZegoUIKit()
           .getSignalingPlugin()
           .getConnectionStateStream()
-          .listen(onInvitationConnectionState))
-      ..add(ZegoUIKit().getNetworkModeStream().listen(onNetworkModeChanged));
+          .listen(onInvitationConnectionState));
+      
   }
 
   Future<void> init({Future<void> Function()? onPluginInit}) async {

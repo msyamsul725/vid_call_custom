@@ -15,6 +15,7 @@ import 'package:zego_uikit_prebuilt_call/src/invitation/internal/defines.dart';
 import 'package:zego_uikit_prebuilt_call/src/invitation/internal/internal_instance.dart';
 import 'package:zego_uikit_prebuilt_call/src/invitation/internal/notification.dart';
 import 'package:zego_uikit_prebuilt_call/src/invitation/internal/protocols.dart';
+import 'package:zego_uikit_prebuilt_call/src/invitation/internal/reporter.dart';
 import 'package:zego_uikit_prebuilt_call/src/invitation/pages/calling/machine.dart';
 import 'package:zego_uikit_prebuilt_call/src/invitation/pages/page_manager.dart';
 import 'package:zego_uikit_prebuilt_call/src/invitation/service.dart';
@@ -340,30 +341,33 @@ class _ZegoSendCallInvitationButtonState
     return true;
   }
 
-  void onPressed(
-    String code,
-    String message,
-    String invitationID,
-    List<String> errorInvitees,
-  ) {
+  void onPressed(ZegoStartInvitationButtonResult result) async {
     ZegoLoggerService.logInfo(
-      'pressed, code:$code, message:$message, '
-      'invitation id:$invitationID, error invitees:$errorInvitees',
+      'pressed, result:$result',
       tag: 'call-invitation',
       subTag: 'components, send call button',
     );
 
-    pageManager?.onLocalSendInvitation(
+    ZegoUIKit().reporter().report(
+      event: ZegoCallReporter.eventSendInvitation,
+      params: {
+        ZegoUIKitSignalingReporter.eventKeyInvitationID: result.invitationID,
+        ZegoCallReporter.eventKeyInvitationSource:
+            ZegoCallReporter.eventKeyInvitationSourceButton,
+      },
+    );
+
+    await pageManager?.onLocalSendInvitation(
       callID: callIDNotifier.value,
       invitees: List.from(widget.invitees),
       invitationType: widget.isVideoCall
           ? ZegoCallInvitationType.videoCall
           : ZegoCallInvitationType.voiceCall,
       customData: widget.customData,
-      code: code,
-      message: message,
-      invitationID: invitationID,
-      errorInvitees: errorInvitees,
+      code: result.code,
+      message: result.message,
+      invitationID: result.invitationID,
+      errorInvitees: result.errorInvitees,
       localConfig: ZegoCallInvitationLocalParameter(
         resourceID: widget.resourceID,
         notificationTitle: widget.notificationTitle,
@@ -373,7 +377,7 @@ class _ZegoSendCallInvitationButtonState
     );
 
     if (widget.onPressed != null) {
-      widget.onPressed!(code, message, errorInvitees);
+      widget.onPressed!(result.code, result.message, result.errorInvitees);
     }
 
     updateCallID();

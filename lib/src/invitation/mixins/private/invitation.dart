@@ -319,6 +319,7 @@ class ZegoCallInvitationServiceAPIPrivateImpl {
       ZegoSignalingPluginCancelInvitationResult result,
     ) async {
       _pageManager?.onLocalCancelInvitation(
+        result.invitationID,
         result.error?.code ?? '',
         result.error?.message ?? '',
         result.errorInvitees,
@@ -369,6 +370,7 @@ class ZegoCallInvitationServiceAPIPrivateImpl {
       ZegoSignalingPluginResponseInvitationResult result,
     ) async {
       _pageManager?.onLocalRefuseInvitation(
+        result.invitationID,
         result.error?.code ?? '',
         result.error?.message ?? '',
       );
@@ -418,6 +420,7 @@ class ZegoCallInvitationServiceAPIPrivateImpl {
       ZegoSignalingPluginResponseInvitationResult result,
     ) async {
       _pageManager?.onLocalAcceptInvitation(
+        result.invitationID,
         result.error?.code ?? '',
         result.error?.message ?? '',
       );

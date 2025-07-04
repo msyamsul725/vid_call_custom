@@ -1,4 +1,5 @@
 // Project imports:
+import 'package:zego_uikit/zego_uikit.dart';
 import 'package:zego_uikit_prebuilt_call/zego_uikit_prebuilt_call.dart';
 
 const deprecatedTipsV419 = ', '

@@ -4,6 +4,7 @@ import 'dart:math';
 
 // Package imports:
 import 'package:permission_handler/permission_handler.dart';
+import 'package:zego_uikit/zego_uikit.dart';
 
 // Project imports:
 import 'package:zego_uikit_prebuilt_call/src/channel/defines.dart';

@@ -13,13 +13,22 @@ class ZegoCallInvitationServicePrivateImpl
         ZegoCallInvitationServiceCallKitPrivate,
         ZegoCallInvitationServiceIOSCallKitPrivatePrivate {
   bool _isInit = false;
-
+ final localInvitingUsersNotifier = ValueNotifier<List<ZegoCallUser>>([]);
   /// callkit
   bool _enableIOSVoIP = false;
 
   ReceivePort? _backgroundPort;
 
   ContextQuery? _contextQuery;
+  void updateLocalInvitingUsers(List<ZegoCallUser> users) {
+    ZegoLoggerService.logInfo(
+      'updateLocalInvitingUsers:$users',
+      tag: 'call-invitation',
+      subTag: 'service private(${identityHashCode(this)})',
+    );
+
+    localInvitingUsersNotifier.value = users;
+  }
 
   /// for change innerText before service.init()
   final _defaultInnerText = ZegoCallInvitationInnerText();

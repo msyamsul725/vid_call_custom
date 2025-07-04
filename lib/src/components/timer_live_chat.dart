@@ -123,7 +123,7 @@ class _LiveChatState extends State<LiveChatTimer> {
                 ),
               )
             : Center(
-                child: LoadingAnimationWidget.prograssiveDots(
+                child: LoadingAnimationWidget.bouncingBall(
                 color: const Color(0xFFEA3799),
                 size: MediaQuery.sizeOf(context).width * 0.1,
               )));
